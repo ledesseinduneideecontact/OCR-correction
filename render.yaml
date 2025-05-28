@@ -15,18 +15,22 @@ services:
     autoDeploy: true
     healthCheckPath: /
     
-  # Service Backend (Express)
+  # Service Backend (Express + Python)
   - type: web
-    name: ocr-correction-backend
-    env: node
-    buildCommand: npm install
-    startCommand: npm run server:prod
+    name: opencorrection-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: NODE_ENV
+      - key: ENVIRONMENT
         value: production
-      - key: PORT
-        value: 8000
+      - key: DEBUG
+        value: false
+      - key: SECRET_KEY
+        sync: false
       - key: MISTRAL_API_KEY
+        sync: false
+      - key: HEALTH_CHECK_TOKEN
         sync: false
       - key: SUPABASE_URL
         sync: false
@@ -34,5 +38,6 @@ services:
         sync: false
       - key: GOOGLE_VISION_CREDENTIALS
         sync: false
-    autoDeploy: true
-    healthCheckPath: /health 
+    healthCheckPath: /healthz
+    healthCheckTimeout: 5
+    autoDeploy: true 
