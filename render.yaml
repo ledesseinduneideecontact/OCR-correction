@@ -1,0 +1,38 @@
+services:
+  # Service Frontend (React)
+  - type: web
+    name: ocr-correction-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+    autoDeploy: true
+    healthCheckPath: /
+    
+  # Service Backend (Express)
+  - type: web
+    name: ocr-correction-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm run server:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: GOOGLE_VISION_CREDENTIALS
+        sync: false
+    autoDeploy: true
+    healthCheckPath: /health 
